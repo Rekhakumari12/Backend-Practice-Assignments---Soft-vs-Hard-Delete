@@ -41,7 +41,7 @@ app.get('/students/:id', async (req, res) =>{
 app.delete('/students/:id', async (req, res) =>{
     if (req.query.type === "soft") {
         const student = await Student.findById(req.params.id)
-        if (!student ||student.isDeleted) return statusCode(404)
+        if (student.isDeleted) return statusCode(404)
         student.isDeleted = true
         const result=await student.save()
         res.status(200).send(result)
