@@ -11,7 +11,6 @@ app.use(express.json());
 
 // Get all the students
 app.get('/students', async (req, res) => {
-    // write your codes here
     const students = await Student.find()
     if (!students) return statusCode(404)
     res.send(students)
@@ -19,7 +18,6 @@ app.get('/students', async (req, res) => {
 
 // Add student to database
 app.post('/students', async (req, res) =>{
-    // write your codes here
     const student = new Student({
         name: req.body.name,
         sex: req.body.sex,
@@ -34,7 +32,6 @@ app.post('/students', async (req, res) =>{
 
 // Get specific student
 app.get('/students/:id', async (req, res) =>{
-    // write your codes here
     const student=await Student.findById(req.params.id)
     if (!student || student.isDeleted) return statusCode(404)
     res.send(student)
@@ -42,17 +39,16 @@ app.get('/students/:id', async (req, res) =>{
 
 // delete specific student
 app.delete('/students/:id', async (req, res) =>{
-    // write your codes here
     if (req.query.type === "soft") {
         const student = await Student.findById(req.params.id)
         if (!student ||student.isDeleted) return statusCode(404)
-        student.isDelete = true
-        await student.save()
-        res.sendStatus(200)
+        student.isDeleted = true
+        const result=await student.save()
+        res.status(200).send(result)
     }
     if (req.query.type === "hard") {
         const student = await Student.findByIdAndDelete(req.params.id)
-        res.statusCode(200)
+        res.status(200).send(student)
     }
 }) 
 
