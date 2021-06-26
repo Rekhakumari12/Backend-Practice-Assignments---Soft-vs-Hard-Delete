@@ -43,18 +43,22 @@ app.delete('/student/:id', async (req, res) =>{
         const student = await Student.findById(req.params.id)
         if (student.isDeleted) return sendStatus(404)
         student.isDeleted = true
-        const result=await student.save()
-        res.send(result)
+        await student.save()
+        res.sendStatus(200)
+    }
+    if (req.query.type === "hard") {
+        await Student.deleteOne({_id:req.params.id})
+        res.sendStatus(200)
     }
 })
 
-
 app.delete('/students/:id', async (req, res) => {
     if (req.query.type === "hard") {
-        const student = await Student.findByIdAndDelete(req.params.id)
-        res.send(student)
+        await Student.deleteOne({_id:req.params.id})
+        res.sendStatus(200)
     }
-}) 
+})
+
 
 
 module.exports = app;
