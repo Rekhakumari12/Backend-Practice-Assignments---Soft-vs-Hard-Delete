@@ -11,8 +11,8 @@ app.use(express.json());
 
 // Get all the students
 app.get('/students', async (req, res) => {
-    const students = await Student.find()
-    if (!students) return statusCode(404)
+    const students = await Student.find({isDeleted:false})
+    if (!students) return sendStatus(404)
     res.send(students)
 })
 
@@ -24,7 +24,7 @@ app.post('/students', async (req, res) =>{
         class: req.body.class,
         age: req.body.age,
         grade_point: req.body.grade_point,
-       isDeleted:req.body.isDeleted
+        isDeleted:req.body.isDeleted
     })
     const result = await student.save()
     res.send(result)
@@ -33,7 +33,7 @@ app.post('/students', async (req, res) =>{
 // Get specific student
 app.get('/students/:id', async (req, res) =>{
     const student=await Student.findById(req.params.id)
-    if (!student || student.isDeleted) return statusCode(404)
+    if (!student || student.isDeleted) return sendStatus(404)
     res.send(student)
 })
 
@@ -58,7 +58,6 @@ app.delete('/students/:id', async (req, res) => {
         res.sendStatus(200)
     }
 })
-
 
 
 module.exports = app;
