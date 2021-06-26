@@ -38,17 +38,20 @@ app.get('/students/:id', async (req, res) =>{
 })
 
 // delete specific student
-app.delete('/students/:id', async (req, res) =>{
+app.delete('/student/:id', async (req, res) =>{
     if (req.query.type === "soft") {
         const student = await Student.findById(req.params.id)
-        if (student.isDeleted) return statusCode(404)
+        if (!student ||student.isDeleted) return sendStatus(404)
         student.isDeleted = true
         const result=await student.save()
-        res.status(200).send(result)
+        res.send(result)
     }
+})
+
+app.delete('/students/:id', async (req, res) => {
     if (req.query.type === "hard") {
         const student = await Student.findByIdAndDelete(req.params.id)
-        res.status(200).send(student)
+        res.send(student)
     }
 }) 
 
